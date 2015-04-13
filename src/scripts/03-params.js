@@ -78,6 +78,18 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
 
         /**
          * @ngdoc method
+         * @name ngTable.factory:NgTableParams#renderPagination
+         * @methodOf ngTable.factory:NgTableParams
+         * @description Returns flag if pagination should be automatically rendered below table or not
+         *
+         * @returns {Object} true or false
+         */
+        this.renderPagination = function() {
+            return params.renderPagination;
+        };
+
+        /**
+         * @ngdoc method
          * @name ngTable.factory:NgTableParams#settings
          * @methodOf ngTable.factory:NgTableParams
          * @description Set new settings for table
@@ -394,7 +406,6 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
                 pData = $defer.promise;
             }
             return pData.then(function(data) {
-                settings.$loading = false;
                 log('ngTable: current scope', settings.$scope);
                 if (settings.groupBy) {
                     self.data = data;
@@ -406,6 +417,10 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
                 if (settings.$scope) settings.$scope.pages = self.generatePagesArray(self.page(), self.total(), self.count());
                 settings.$scope.$emit('ngTableAfterReloadData');
                 return data;
+            }, function (error) {
+                // TODO: Handle errors here
+            }).finally(function () {
+                settings.$loading = false;
             });
         };
 

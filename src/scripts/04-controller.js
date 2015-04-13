@@ -77,15 +77,17 @@ function($scope, NgTableParams, $timeout, $parse, $compile, $attrs, $element, ng
                 headerTemplate = angular.element(document.createElement('thead')).attr('ng-include', 'templates.header');
                 $element.prepend(headerTemplate);
             }
-            var paginationTemplate = angular.element(document.createElement('div')).attr({
-                'ng-table-pagination': 'params',
-                'template-url': 'templates.pagination'
-            });
-            $element.after(paginationTemplate);
             if (headerTemplate) {
                 $compile(headerTemplate)($scope);
             }
-            $compile(paginationTemplate)($scope);
+            if ($scope.params.renderPagination()) {
+                var paginationTemplate = angular.element(document.createElement('div')).attr({
+                    'ng-table-pagination': 'params',
+                    'template-url': 'templates.pagination'
+                });
+                $element.after(paginationTemplate);
+                $compile(paginationTemplate)($scope);
+            }
         }
     };
 
@@ -165,11 +167,16 @@ function($scope, NgTableParams, $timeout, $parse, $compile, $attrs, $element, ng
         }
         var defaultSort = $scope.params.settings().defaultSort;
         var inverseSort = (defaultSort === 'asc' ? 'desc' : 'asc');
+        var currentSort = $scope.params.sorting()[parsedSortable];
         var sorting = $scope.params.sorting() && $scope.params.sorting()[parsedSortable] && ($scope.params.sorting()[parsedSortable] === defaultSort);
         var sortingParams = (event.ctrlKey || event.metaKey) ? $scope.params.sorting() : {};
         sortingParams[parsedSortable] = (sorting ? inverseSort : defaultSort);
+        if (currentSort !== undefined && currentSort !== defaultSort) {
+            delete sortingParams[parsedSortable]
+        }
         $scope.params.parameters({
-            sorting: sortingParams
+            sorting: sortingParams,
+            page: $scope.params.settings().preservePageOnSort ? $scope.params.page() : 1
         });
     };
 }]);
