@@ -185,9 +185,14 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
          * @returns {Object|Number} Current page or `this`
          */
         this.total = function(total) {
-            return angular.isDefined(total) ? this.settings({
-                'total': total
-            }) : settings.total;
+            if (angular.isDefined(total)) {
+                settings.$scope.$emit('ngTableAfterTotalUpdated', total);
+                return this.settings({
+                    'total': total
+                });
+            } else {
+                return settings.total;
+            }
         };
 
         /**
