@@ -136,7 +136,9 @@ app.factory('NgTableParams', ['$q', '$log', 'ngTableDefaults', function($q, $log
          */
         this.total = function(total) {
             if (angular.isDefined(total)) {
-                settings.$scope.$emit('ngTableAfterTotalUpdated', total);
+                if (settings.$scope) {
+                    settings.$scope.$emit('ngTableAfterTotalUpdated', total);
+                }
                 return this.settings({
                     'total': total
                 });
