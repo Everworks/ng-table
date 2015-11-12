@@ -100,11 +100,13 @@
                         'ng-table-pagination': 'params',
                         'template-url': 'templates.pagination'
                     });
-                    $element.after(paginationTemplate);
+                    // MW: Commented out as we have custom pagination always
+                    //$element.after(paginationTemplate);
                     if (headerTemplate) {
                         $compile(headerTemplate)($scope);
                     }
-                    $compile(paginationTemplate)($scope);
+                    // MW: Commented out as we have custom pagination always
+                    //$compile(paginationTemplate)($scope);
                 }
             };
 
